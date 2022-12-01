@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 // Тест успешно пройдёт.
 TEST(TestUtils, test_avg)

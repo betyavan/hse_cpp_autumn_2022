@@ -6,8 +6,12 @@ void Allocator::makeAllocator(size_t maxSize)
 	if (start_ != nullptr)
 		delete[] start_;
 	// выделяем память
-	start_ = new char[maxSize];
+	if (maxSize == 0)
+		start = nullptr;
+	else
+		start_ = new char[maxSize];
 	offset_ = start_;
+	used_ = 0;
 	max_size_ = maxSize;
 }
 
