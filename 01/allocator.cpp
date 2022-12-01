@@ -7,7 +7,7 @@ void Allocator::makeAllocator(size_t maxSize)
 		delete[] start_;
 	// выделяем память
 	if (maxSize == 0)
-		start = nullptr;
+		start_ = nullptr;
 	else
 		start_ = new char[maxSize];
 	offset_ = start_;

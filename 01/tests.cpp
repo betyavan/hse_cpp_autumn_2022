@@ -32,6 +32,26 @@ TEST(TestUtils, test_avg)
         char *res = al.alloc( 1 );
         ASSERT_TRUE( res != nullptr );
     }
+
+    // повторный вызов makeAllocator
+    al.makeAllocator(5);
+    {
+        char* res = al.alloc(5);
+        ASSERT_TRUE( res!= nullptr );
+    }
+
+    // больше памяти нет
+    {
+        char* res = al.alloc(1);
+        ASSERT_EQ( res, nullptr );
+    }
+
+    // makeAllocator c 0
+    al.makeAllocator(0);
+    {
+        char* res = al.alloc(1);
+        ASSERT_EQ( res, nullptr );
+    }
 }
 
 int main(int argc, char** argv)
