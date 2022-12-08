@@ -5,8 +5,8 @@
 
 TEST(TestUtils, my_test_1)
 {
-    // дефолтный тест, на проверку функциональности
-    // разделены пробелами
+    // РґРµС„РѕР»С‚РЅС‹Р№ С‚РµСЃС‚, РЅР° РїСЂРѕРІРµСЂРєСѓ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅРѕСЃС‚Рё
+    // СЂР°Р·РґРµР»РµРЅС‹ РїСЂРѕР±РµР»Р°РјРё
     TokenParser parser;
     parser.SetStartCallback(func4callback::printStart);
     parser.SetEndCallback(func4callback::printEnd);
@@ -22,7 +22,7 @@ TEST(TestUtils, my_test_1)
 
 TEST(TestUtils, my_test_2)
 {
-    // тоже самое, только есть число не помещающееся в uint64_t => считаем строкой
+    // С‚РѕР¶Рµ СЃР°РјРѕРµ, С‚РѕР»СЊРєРѕ РµСЃС‚СЊ С‡РёСЃР»Рѕ РЅРµ РїРѕРјРµС‰Р°СЋС‰РµРµСЃСЏ РІ uint64_t => СЃС‡РёС‚Р°РµРј СЃС‚СЂРѕРєРѕР№
     TokenParser parser;
     parser.SetStartCallback(func4callback::printStart);
     parser.SetEndCallback(func4callback::printEnd);
@@ -36,7 +36,7 @@ TEST(TestUtils, my_test_2)
 
 TEST(TestUtils, my_test_3)
 {
-    // разделаны табами и \n
+    // СЂР°Р·РґРµР»Р°РЅС‹ С‚Р°Р±Р°РјРё Рё \n
     TokenParser parser;
     parser.SetStartCallback(func4callback::printStart);
     parser.SetEndCallback(func4callback::printEnd);
@@ -53,7 +53,7 @@ TEST(TestUtils, my_test_3)
 
 TEST(TestUtils, my_test_4)
 {
-    // пустая строка
+    // РїСѓСЃС‚Р°СЏ СЃС‚СЂРѕРєР°
     TokenParser parser;
     parser.SetStartCallback(func4callback::printStart);
     parser.SetEndCallback(func4callback::printEnd);
@@ -70,7 +70,7 @@ TEST(TestUtils, my_test_4)
 
 TEST(TestUtils, my_test_5)
 {
-    // используем дефолтное
+    // РёСЃРїРѕР»СЊР·СѓРµРј РґРµС„РѕР»С‚РЅРѕРµ
     TokenParser parser;
 
     std::string str = "  bebra\n    12345  4you  \n";
@@ -82,7 +82,7 @@ TEST(TestUtils, my_test_5)
 
 TEST(TestUtils, my_test_6)
 {
-    // другая функция для строк
+    // РґСЂСѓРіР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ СЃС‚СЂРѕРє
     TokenParser parser;
     parser.SetStartCallback(func4callback::printStart);
     parser.SetEndCallback(func4callback::printEnd);
@@ -98,7 +98,7 @@ TEST(TestUtils, my_test_6)
 
 TEST(TestUtils, my_test_7)
 {
-    // другая функция для строк, где число как строка
+    // РґСЂСѓРіР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ СЃС‚СЂРѕРє, РіРґРµ С‡РёСЃР»Рѕ РєР°Рє СЃС‚СЂРѕРєР°
     TokenParser parser;
     parser.SetStartCallback(func4callback::printStart);
     parser.SetEndCallback(func4callback::printEnd);
@@ -113,7 +113,7 @@ TEST(TestUtils, my_test_7)
 
 TEST(TestUtils, my_test_8)
 {
-    // проверка ресета
+    // РїСЂРѕРІРµСЂРєР° СЂРµСЃРµС‚Р°
     TokenParser parser;
     parser.SetStartCallback(func4callback::printStart);
     parser.SetEndCallback(func4callback::printEnd);

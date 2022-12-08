@@ -4,7 +4,7 @@
 
 class TokenParser
 {
-    // "маски" для callback функции
+    // "РјР°СЃРєРё" РґР»СЏ callback С„СѓРЅРєС†РёРё
     using startEndFuncType = std::string(*)();
     using digitFuncType = int(*)(uint64_t);
     using strFuncType = std::string(*)(const std::string&);

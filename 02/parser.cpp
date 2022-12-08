@@ -3,23 +3,23 @@
 
 
 std::vector<std::string> TokenParser::Parse(const std::string& line) {
-	std::vector<std::string> result; // вектор для проверки парсинга
-	// вызов start callback
+	std::vector<std::string> result; // РІРµРєС‚РѕСЂ РґР»СЏ РїСЂРѕРІРµСЂРєРё РїР°СЂСЃРёРЅРіР°
+	// РІС‹Р·РѕРІ start callback
 	result.push_back((startCallback != nullptr) ? startCallback() : "no_start_callback");
-	// парсим
+	// РїР°СЂСЃРёРј
 	std::stringstream inp(line);
 	std::string cur_token;
 	while (inp >> cur_token)
 	{
 		if (isDigit(cur_token)) {
-			try { // обработка в случае числа, большего uint64_t
+			try { // РѕР±СЂР°Р±РѕС‚РєР° РІ СЃР»СѓС‡Р°Рµ С‡РёСЃР»Р°, Р±РѕР»СЊС€РµРіРѕ uint64_t
 				uint64_t num = std::stoull(cur_token);
 				if (digitCallback != nullptr)
 					result.push_back(std::to_string(digitCallback(num)));
 				else
 					result.push_back(std::to_string(num));
 			}
-			catch (std::out_of_range& ex) { // в этом случае относимся как к строке
+			catch (std::out_of_range& ex) { // РІ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РѕС‚РЅРѕСЃРёРјСЃСЏ РєР°Рє Рє СЃС‚СЂРѕРєРµ
 				//std::cout << "number is too big!\n";
 				result.push_back((strCallback != nullptr) ? strCallback(cur_token) : cur_token);
 			}	
@@ -27,7 +27,7 @@ std::vector<std::string> TokenParser::Parse(const std::string& line) {
 		else 
 			result.push_back((strCallback != nullptr) ? strCallback(cur_token) : cur_token);
 	}
-	// вызов end callback
+	// РІС‹Р·РѕРІ end callback
 	result.push_back((endCallback != nullptr) ? endCallback() : "no_end_callback");
 
 	return result;
