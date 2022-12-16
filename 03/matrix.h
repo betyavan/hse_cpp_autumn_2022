@@ -39,9 +39,10 @@ namespace linalg {
 
 		template <typename Other> friend class Matrix;
 
+		size_t size() const noexcept { return m_rows * m_columns; }
 		size_t rows() const noexcept { return m_rows; }
 		size_t columns() const noexcept { return m_columns; }
-		bool empty() const noexcept { return m_size == 0; }
+		bool empty() const noexcept { return m_rows * m_columns == 0; }
 		void reshape(size_t rows, size_t cols);
 		size_t capacity() const noexcept { return m_capacity; }
 		void reserve(int capacity);
@@ -55,7 +56,6 @@ namespace linalg {
 		T* m_ptr = nullptr;
 		size_t m_rows = 0;
 		size_t m_columns = 0;
-		size_t m_size = 0;
 		size_t m_capacity = 0;
 	};
 
@@ -75,15 +75,12 @@ namespace linalg {
 
 	template <typename T1, typename T2>
 	auto operator-(const Matrix<T1>& lhs, const Matrix<T2>& rhs) {
-		Matrix<decltype(T1() + T2())> result = lhs;
+		Matrix<decltype(T1() - T2())> result = lhs;
 		return result -= rhs;
 	}
 
 	template <typename T1, typename T2>
-	auto operator*(const Matrix<T1>& lhs, const Matrix<T2>& rhs) {
-		Matrix<decltype(T1() + T2())> result = lhs;
-		return result *= rhs;
-	}
+	auto operator*(const Matrix<T1>& lhs, const Matrix<T2>& rhs);
 
 	template <typename T1, typename T2>
 	auto operator*(const Matrix<T1>& lhs, const T2& rhs) {
@@ -97,24 +94,24 @@ namespace linalg {
 		return result *= lhs;
 	}
 
-	struct Exception : public std::exception {
-		Exception(const char* msg) : std::exception(msg) {}
+	struct MatrixException : public std::exception {
+		MatrixException(const char* msg) : std::exception(msg) {}
 	};
 
-	struct InvalidException : public Exception {
-		InvalidException() : Exception("Invalid matrix") {}
+	struct InvalidException : public MatrixException {
+		InvalidException() : MatrixException("Invalid matrix") {}
 	};
 
-	struct ReshapeException : public Exception {
-		ReshapeException() : Exception("Invalid reshape") {}
+	struct ReshapeException : public MatrixException {
+		ReshapeException() : MatrixException("Invalid reshape") {}
 	};
 
-	struct OutOfRangeException : public Exception {
-		OutOfRangeException() : Exception("Out of range") {}
+	struct OutOfRangeException : public MatrixException {
+		OutOfRangeException() : MatrixException("Out of range") {}
 	};
 
-	struct ValueException : public Exception {
-		ValueException() : Exception("Invalid value for linalg operation") {}
+	struct ValueException : public MatrixException {
+		ValueException() : MatrixException("Invalid value for linalg operation") {}
 	};
 
 

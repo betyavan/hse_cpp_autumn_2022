@@ -21,7 +21,6 @@ linalg::Matrix<T>::Matrix(size_t rows) {
 		throw;
 	}
 	m_ptr = tmp_ptr;
-	m_size = rows;
 	m_capacity = rows;
 	m_rows = rows;
 	m_columns = 1;
@@ -36,13 +35,13 @@ inline linalg::Matrix<T>::Matrix(size_t rows, size_t cols) : Matrix(rows* cols) 
 template <typename T>
 template <typename T2>
 inline void linalg::Matrix<T>::copy_constructor(const Matrix<T2>& obj) {
-	if (obj.m_size == 0)
+	if (obj.size() == 0)
 		return;
-	T* tmp_ptr = reinterpret_cast<T*>(operator new(sizeof(T) * obj.m_size));
+	T* tmp_ptr = reinterpret_cast<T*>(operator new(sizeof(T) * obj.size()));
 	T* cur_ptr = tmp_ptr;
 	try {
 		for (T2* obj_ptr = obj.m_ptr;
-			cur_ptr != tmp_ptr + obj.m_size;
+			cur_ptr != tmp_ptr + obj.size();
 			++cur_ptr, ++obj_ptr)
 			new(cur_ptr) T(*obj_ptr);
 	}
@@ -53,8 +52,7 @@ inline void linalg::Matrix<T>::copy_constructor(const Matrix<T2>& obj) {
 		throw;
 	}
 	m_ptr = tmp_ptr;
-	m_size = obj.m_size;
-	m_capacity = obj.m_size;
+	m_capacity = obj.size();
 	m_rows = obj.m_rows;
 	m_columns = obj.m_columns;
 }
@@ -79,7 +77,6 @@ inline linalg::Matrix<T>::Matrix(std::initializer_list<Other> lst) {
 		throw;
 	}
 	m_ptr = tmp_ptr;
-	m_size = lst.size();
 	m_capacity = lst.size();
 	m_rows = lst.size();
 	m_columns = 1;
@@ -92,18 +89,11 @@ inline linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<Oth
 		return;
 
 	m_rows = lst.size();
-	int columns = 0;
-	bool is_first = true;
-	for (std::initializer_list<Other> row : lst) {
-		if (!is_first && row.size() != columns)
+	m_columns = lst.begin()->size();
+	for (auto it = lst.begin(); it != lst.end(); ++it) {
+		if (it->size() != m_columns)
 			throw linalg::InvalidException();
-		if (is_first)
-			columns = row.size();
-		is_first = false;
 	}
-	if (columns == 0)
-		return;
-	m_columns = columns;
 
 	T* tmp_ptr = reinterpret_cast<T*>(operator new(sizeof(T) * m_rows * m_columns));
 	T* cur_ptr = tmp_ptr;
@@ -122,14 +112,13 @@ inline linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<Oth
 		throw;
 	}
 	m_ptr = tmp_ptr;
-	m_size = m_rows * m_columns;
 	m_capacity = m_rows * m_columns;
 
 }
 
 template<typename T>
 inline linalg::Matrix<T>::~Matrix() {
-	for (T* ptr = m_ptr; ptr != m_ptr + m_size; ++ptr)
+	for (T* ptr = m_ptr; ptr != m_ptr + this->size(); ++ptr)
 		ptr->~T();
 	delete reinterpret_cast<void*>(m_ptr);
 }
@@ -168,28 +157,27 @@ inline linalg::Matrix<T>& linalg::Matrix<T>::operator*=(const Other& num) {
 template <typename T>
 template <typename Other>
 linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<Other>& obj) {
-	if (m_capacity < obj.m_size)
+	if (m_capacity < obj.size())
 		return *this = Matrix(obj);
 	Other* obj_ptr = obj.m_ptr;
 	T* cur_ptr = m_ptr;
-	while (cur_ptr != m_ptr + std::min(m_size, obj.m_size))
+	while (cur_ptr != m_ptr + std::min(this->size(), obj.size()))
 		*cur_ptr++ = *obj_ptr++;
-	if (m_size < obj.m_size) {
+	if (this->size() < obj.size()) {
 		try {
-			for (; cur_ptr != m_ptr + obj.m_size; ++obj_ptr, ++cur_ptr)
+			for (; cur_ptr != m_ptr + obj.size(); ++obj_ptr, ++cur_ptr)
 				new(cur_ptr) T(*obj_ptr);
 		}
 		catch (...) {
-			while (cur_ptr-- != m_ptr + m_size)
+			while (cur_ptr-- != m_ptr + this->size())
 				cur_ptr->~T();
 			throw;
 		}
 	}
 	else {
-		while (cur_ptr != m_ptr + m_size)
+		while (cur_ptr != m_ptr + this->size())
 			(cur_ptr++)->~T();
 	}
-	m_size = obj.m_size;
 	m_rows = obj.m_rows;
 	m_columns = obj.m_columns;
 	return *this;
@@ -200,7 +188,7 @@ template<typename Other>
 inline linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<Other>& obj) {
 	if (obj.rows() != m_rows || obj.columns() != m_columns)
 		throw linalg::ValueException();
-	for (size_t i = 0; i < m_size; ++i)
+	for (size_t i = 0; i < this->size(); ++i)
 		m_ptr[i] += obj.m_ptr[i];
 	return *this;
 }
@@ -211,7 +199,7 @@ inline linalg::Matrix<T>& linalg::Matrix<T>::operator-=(const Matrix<Other>& obj
 {
 	if (obj.rows() != m_rows || obj.columns() != m_columns)
 		throw linalg::ValueException();
-	for (size_t i = 0; i < m_size; ++i)
+	for (size_t i = 0; i < this->size(); ++i)
 		m_ptr[i] -= obj.m_ptr[i];
 	return *this;
 }
@@ -236,7 +224,7 @@ inline linalg::Matrix<T>& linalg::Matrix<T>::operator*=(const Matrix<Other>& obj
 
 template <typename T>
 void linalg::Matrix<T>::reshape(size_t rows, size_t cols) {
-	if (rows * cols != m_size)
+	if (rows * cols != this->size())
 		throw linalg::ReshapeException();
 	m_rows = rows;
 	m_columns = cols;
@@ -244,16 +232,15 @@ void linalg::Matrix<T>::reshape(size_t rows, size_t cols) {
 
 template<typename T>
 inline void linalg::Matrix<T>::shrink_to_fit() {
-	if (m_capacity == m_size)
+	if (m_capacity == this->size())
 		return;
 	*this = Matrix(*this);
 }
 
 template<typename T>
 inline void linalg::Matrix<T>::clear() noexcept {
-	for (T* ptr = m_ptr; ptr != m_ptr + m_size; ++ptr)
+	for (T* ptr = m_ptr; ptr != m_ptr + this->size(); ++ptr)
 		ptr->~T();
-	m_size = 0;
 	m_rows = 0;
 	m_columns = 0;
 }
@@ -261,7 +248,6 @@ inline void linalg::Matrix<T>::clear() noexcept {
 template<typename T>
 inline void linalg::Matrix<T>::swap(Matrix& obj) noexcept {
 	std::swap(m_ptr, obj.m_ptr);
-	std::swap(m_size, obj.m_size);
 	std::swap(m_capacity, obj.m_capacity);
 	std::swap(m_rows, obj.m_rows);
 	std::swap(m_columns, obj.m_columns);
@@ -276,7 +262,7 @@ inline void linalg::Matrix<T>::reserve(int capacity) {
 	T* current_ptr = tmp_ptr;
 	try {
 		for (T* old_ptr = m_ptr;
-			current_ptr != tmp_ptr + m_size;
+			current_ptr != tmp_ptr + this->size();
 			++current_ptr, ++old_ptr)
 			new(current_ptr) T(*old_ptr);
 	}
@@ -286,7 +272,7 @@ inline void linalg::Matrix<T>::reserve(int capacity) {
 		delete reinterpret_cast<void*>(tmp_ptr);
 		throw;
 	}
-	for (T* ptr = m_ptr; ptr != m_ptr + m_size; ++ptr)
+	for (T* ptr = m_ptr; ptr != m_ptr + this->size(); ++ptr)
 		ptr->~T();
 	delete reinterpret_cast<void*>(m_ptr);
 	m_ptr = tmp_ptr;
@@ -304,4 +290,22 @@ bool linalg::operator==(const Matrix<T1>& lhs, const Matrix<T2>& rhs) {
 		}
 	}
 	return true;
+}
+
+template<typename T1, typename T2>
+auto linalg::operator*(const Matrix<T1>& lhs, const Matrix<T2>& rhs) {
+	using res_type = decltype(T1()* T2() + T1() * T2());
+
+	if (lhs.columns() != rhs.rows())
+		throw linalg::ValueException();
+	Matrix<res_type> result(lhs.rows(), rhs.columns());
+	for (size_t i = 0; i < lhs.rows(); ++i) {
+		for (size_t j = 0; j < rhs.columns(); ++j) {
+			res_type sum = 0;
+			for (size_t k = 0; k < rhs.rows(); ++k)
+				sum += lhs(i, k) * rhs(k, j);
+			result(i, j) = sum;
+		}
+	}
+	return result;
 }
