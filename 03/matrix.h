@@ -84,13 +84,13 @@ namespace linalg {
 
 	template <typename T1, typename T2>
 	auto operator*(const Matrix<T1>& lhs, const T2& rhs) {
-		Matrix<decltype(T1() + T2())> result = lhs;
+		Matrix<decltype(T1() * T2())> result = lhs;
 		return result *= rhs;
 	}
 
 	template <typename T1, typename T2>
 	auto operator*(const T1& lhs, const Matrix<T2>& rhs) {
-		Matrix<decltype(T1() + T2())> result = rhs;
+		Matrix<decltype(T1() * T2())> result = rhs;
 		return result *= lhs;
 	}
 
