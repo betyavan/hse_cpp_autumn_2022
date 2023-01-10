@@ -1,4 +1,4 @@
-#include "allocator.h"
+#include "allocator.hpp"
 
 void Allocator::makeAllocator(size_t maxSize)
 {
@@ -10,40 +10,16 @@ void Allocator::makeAllocator(size_t maxSize)
 		start_ = nullptr;
 	else
 		start_ = new char[maxSize];
-	offset_ = start_;
-	used_ = 0;
+	offset_ = 0;
 	max_size_ = maxSize;
 }
 
 char* Allocator::alloc(size_t size)
 {
 	// проверка на возможность выделения памяти
-	if (size > max_size_ - used_)
+	if (size > max_size_ - offset_)
 		return nullptr;
-	used_ += size;
-	// то что отдадим пользователю
-	char* tmp_offset = offset_;
-	// здесь работает арифметика указателей
-	// если свободного места больше нет, то offset_ будет указывать
-	// на последний байт выделенной в makeAllocator памяти, чтобы не вылезти в память, которая нам недоступна
-	if (used_ == max_size_)
-		offset_ += (size - 1);
-	else
-		// в ином случае просто сдвигаемся на size и offset_ будет указывать 
-		// на память готовую к отдаче
-		offset_ += size;
+	char* tmp_offset = start_ + offset_;
+	offset_ += size;
 	return tmp_offset;
-}
-
-void Allocator::reset()
-{
-	// необходимо лишь изменить размер и сместить offset_ на начало
-	offset_ = start_;
-	used_ = 0;
-}
-
-Allocator::~Allocator()
-{
-	// обязательно очищаем память, чтоб не было утечки
-	delete[] start_;
 }

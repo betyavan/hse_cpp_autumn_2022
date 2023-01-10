@@ -4,7 +4,7 @@ TEST_LIB=-lgtest -lgtest_main -lpthread
 
 all: allocator test_bin
 
-allocator: allocator.cpp allocator.h
+allocator: allocator.cpp allocator.hpp
 	$(CC) $(FLAGS) -c allocator.cpp
 
 test_bin: allocator.o tests.cpp
