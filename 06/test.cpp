@@ -59,6 +59,18 @@ TEST(ExceptionTests, Test_4) {
     }
 }
 
+TEST(ExceptionTests, Test_5) {
+    try {
+        auto text = format("{0} } {1}", 1, 2);
+    }
+    catch (const InvalidException&) {
+        SUCCEED();
+    }
+    catch (...) {
+        FAIL();
+    }
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
