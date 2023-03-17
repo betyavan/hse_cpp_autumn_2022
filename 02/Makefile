@@ -4,10 +4,10 @@ TEST_LIB=-lgtest -lgtest_main -lpthread
 
 all: parser functions test_bin
 
-parser: parser.cpp parser.h
+parser: parser.cpp parser.hpp
 	$(CC) $(FLAGS) -c parser.cpp
 
-functions: functions.cpp functions.h
+functions: functions.cpp functions.hpp
 	$(CC) $(FLAGS) -c functions.cpp
 
 test_bin: parser.o functions.o test.cpp

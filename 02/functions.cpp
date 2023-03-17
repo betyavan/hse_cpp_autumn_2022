@@ -1,16 +1,16 @@
-#include "functions.h"
+#include "functions.hpp"
+#include <iostream>
 #include <algorithm>
 #include <sstream>
-//#include <iostream>
 
 std::string func4callback::printStart()
 {
-	return "start";
+    return "start";
 }
 
 std::string func4callback::printEnd()
 {
-	return "end";
+    return "end";
 }
 
 std::string func4callback::upper(const std::string& str)

@@ -1,11 +1,14 @@
-#include "parser.h"
+#include "parser.hpp"
 #include <sstream>
 
 
-std::vector<std::string> TokenParser::Parse(const std::string& line) {
-	std::vector<std::string> result; // вектор для проверки парсинга
+void TokenParser::Parse(const std::string& line) {
+	parse_test.clear();
+	order_parse_test.clear();
+
 	// вызов start callback
-	result.push_back((startCallback != nullptr) ? startCallback() : "no_start_callback");
+	order_parse_test.push_back("start_callback");
+	parse_test.push_back((startCallback != nullptr) ? startCallback() : "no_start_callback");
 	// парсим
 	std::stringstream inp(line);
 	std::string cur_token;
@@ -15,22 +18,24 @@ std::vector<std::string> TokenParser::Parse(const std::string& line) {
 			try { // обработка в случае числа, большего uint64_t
 				uint64_t num = std::stoull(cur_token);
 				if (digitCallback != nullptr)
-					result.push_back(std::to_string(digitCallback(num)));
+					parse_test.push_back(std::to_string(digitCallback(num)));
 				else
-					result.push_back(std::to_string(num));
+					parse_test.push_back(std::to_string(num));
+				order_parse_test.push_back("num");
 			}
-			catch (std::out_of_range& ex) { // в этом случае относимся как к строке
-				//std::cout << "number is too big!\n";
-				result.push_back((strCallback != nullptr) ? strCallback(cur_token) : cur_token);
+			catch (std::out_of_range& ex) { //если большего uint64_t, то относимся как к строке
+				parse_test.push_back((strCallback != nullptr) ? strCallback(cur_token) : cur_token);
+				order_parse_test.push_back("str");
 			}	
 		}
-		else 
-			result.push_back((strCallback != nullptr) ? strCallback(cur_token) : cur_token);
+		else {
+			parse_test.push_back((strCallback != nullptr) ? strCallback(cur_token) : cur_token);
+			order_parse_test.push_back("str");
+		}
 	}
 	// вызов end callback
-	result.push_back((endCallback != nullptr) ? endCallback() : "no_end_callback");
-
-	return result;
+	order_parse_test.push_back("end_callback");
+	parse_test.push_back((endCallback != nullptr) ? endCallback() : "no_end_callback");
 }
 
 bool TokenParser::isDigit(const std::string& str)
