@@ -2,6 +2,8 @@
 
 #include <initializer_list>
 #include <stdexcept>
+#include <string>
+
 
 namespace linalg {
 	template <typename T = double>
@@ -94,8 +96,8 @@ namespace linalg {
 		return result *= lhs;
 	}
 
-	struct MatrixException : public std::exception {
-		MatrixException(const char* msg) : std::exception(msg) {}
+	struct MatrixException : public std::runtime_error {
+		MatrixException(const std::string& msg) : std::runtime_error(msg) {}
 	};
 
 	struct InvalidException : public MatrixException {
