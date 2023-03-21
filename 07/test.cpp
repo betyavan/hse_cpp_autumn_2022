@@ -1,9 +1,8 @@
-#include "gtest/gtest.h"
 #include "map.hpp"
-#include <map>
 #include <string>
 #include <vector>
-#include "allocator.hpp">
+#include "allocator.hpp"
+#include "gtest/gtest.h"
 
 
 TEST(MapTest, InsertTest) {
