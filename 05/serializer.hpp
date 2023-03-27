@@ -25,7 +25,7 @@ private:
         if (arg)
             out_ << "true";
         else
-            out_ << "fasle";
+            out_ << "false";
         out_ << Separator;
         return Error::NoError;
     }
@@ -59,6 +59,13 @@ public:
     Error operator()(ArgsT&... args) { return process(args...); }
 
 private:
+
+    bool isDigit(const std::string& str) {
+        std::string::const_iterator it = str.begin();
+        while (it != str.end() && std::isdigit(*it)) ++it;
+        return !str.empty() && it == str.end();
+    }
+
     Error process(bool& arg) {
         std::string text;
         in_ >> text;
@@ -76,14 +83,12 @@ private:
     Error process(uint64_t& arg) {
         std::string text;
         in_ >> text;
+        if (!isDigit(text)) return Error::CorruptedArchive;
         try {
             arg = std::stoull(text);
         }
-        catch (std::out_of_range&) {
-            return Error::CorruptedArchive;
-        }
         catch (...) {
-            throw;
+            return Error::CorruptedArchive;
         }
         return Error::NoError;
     }

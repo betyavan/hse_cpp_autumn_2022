@@ -2,12 +2,10 @@ CC=g++
 FLAGS=-std=c++20 -Wall -pedantic -Wextra 
 TEST_LIB=-lgtest -lgtest_main -lpthread
 
-all: test_comp test_bin
+all: test_bin
 
-test_comp: data.h serializer.h test.cpp
-	$(CC) $(FLAGS) -c test.cpp
 
-test_bin: data.h serializer.h test.cpp
+test_bin: data.hpp serializer.hpp test.cpp
 	$(CC) $(FLAGS) test.cpp -o test_bin $(TEST_LIB)
 
 test:
