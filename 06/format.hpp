@@ -2,9 +2,10 @@
 
 #include <sstream>
 #include <map>
+#include <stdexcept>
 
-struct Exception : std::exception {
-	Exception(const char* str) : std::exception(str) {}
+struct Exception : std::runtime_error {
+	Exception(const char* str) : std::runtime_error(str) {}
 };
 
 struct InvalidException : Exception {
@@ -41,6 +42,8 @@ std::string format(const std::string& str, Args&&...args) {
 	bool is_closed = true;
 	for (const auto& symbol : str) {
 		if (symbol == '}') {
+			if (is_closed)
+				throw InvalidException();
 			is_closed = true;
 			if (num.str().size() == 0)
 				throw InvalidException();
