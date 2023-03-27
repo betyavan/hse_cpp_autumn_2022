@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "myvector.h"
+#include "myvector.hpp"
 #include <ostream>
 
 class BigInt {

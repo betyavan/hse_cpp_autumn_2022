@@ -27,15 +27,15 @@ BigInt::BigInt(std::string num) {
 		data = my::MyVector<int>(1, 0);
 		return;
 	}
-	
+
 	if (num[0] == '-') {
 		negative_flag = 1;
 		num = num.substr(1);
 	}
 	else
 		negative_flag = 0;
-	
-	for (long long i = num.size(); i > 0; i -= BigInt::SIZE) {
+
+	for (int i = num.size(); i > 0; i -= BigInt::SIZE) {
 		if (i < BigInt::SIZE)
 			data.push_back(atoi(num.substr(0, i).c_str()));
 		else
@@ -132,8 +132,11 @@ BigInt operator+(BigInt lhs, const BigInt& rhs) {
 }
 
 BigInt operator+(BigInt lhs, int32_t rhs) {
-	BigInt tmp_rhs = rhs;
-	return lhs + rhs;
+	// BigInt tmp_rhs = rhs;
+	// return lhs + rhs;
+	BigInt tmp = lhs;
+	lhs += rhs;
+	return tmp;
 }
 
 BigInt operator-(BigInt lhs, const BigInt& rhs) {
@@ -210,12 +213,12 @@ bool operator<(const BigInt& lhs, const BigInt& rhs) {
 		}
 	}
 	if (!lhs.negative_flag && !rhs.negative_flag) {
-		if (lhs.data.size() > rhs.data.size()) 
+		if (lhs.data.size() > rhs.data.size())
 			return false;
-		if (lhs.data.size() < rhs.data.size()) 
+		if (lhs.data.size() < rhs.data.size())
 			return true;
 		for (long long i = lhs.data.size() - 1; i >= 0; i--) {
-			if (lhs.data[i] != rhs.data[i]) 
+			if (lhs.data[i] != rhs.data[i])
 				return lhs.data[i] < rhs.data[i];
 		}
 	}

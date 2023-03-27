@@ -4,7 +4,7 @@ TEST_LIB=-lgtest -lgtest_main -lpthread
 
 all: big_int test_bin
 
-big_int: bigint.cpp bigint.h myvector.hpp myvector.h
+big_int: bigint.cpp bigint.h myvector.hpp 
 	$(CC) $(FLAGS) -c bigint.cpp
 
 test_bin: bigint.o test.cpp
@@ -15,3 +15,4 @@ test:
 
 clean:
 	rm -f *.o test_bin
+
